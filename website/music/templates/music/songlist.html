@@ -1,0 +1,62 @@
+{% extends 'music/base.html' %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <table class="table table-striped" border="1">
+                    <thead>
+                        <tr>
+                            <th>Album Title</th>
+                            <th>Song Title</th>
+                            <th>Favorite</th>
+                            <th>Audio File</th>
+                            <th>Delete Song</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for song in all_songs %}
+                       <tr>
+                           <td>{{ song.album.album_title }}</td>
+                           <td>{{ song.song_title }}</td>
+                          <td>
+                                    <a href="{% url 'music:favorite_song_allsongs' song.album.id song.id %}" class="btn-favorite"/>
+                                    {% if song.is_favorite %}
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    {% else %}
+                                        <span class="glyphicon glyphicon-star-empty"></span>
+                                    {% endif %}
+                                    </a>
+                                </td>
+
+                           <td>
+                                    {% if song.audio_file %}
+                                        <a href="{{ song.audio_file.url }}">
+                                            <button type="button" class="btn btn-success btn-xs">
+                                                <span class="glyphicon glyphicon-play"></span>&nbsp; Play
+                                            </button>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form action="{% url 'music:delete_song_allsongs' song.album.id song.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="song_id" value="{{ song.id }}" />
+                                        <button type="submit" class="btn btn-danger btn-xs">
+                                            <span class="glyphicon glyphicon-remove"></span>&nbsp; Delete
+                                        </button>
+                                    </form>
+                                </td>
+
+
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </div>
+{% endblock %}
